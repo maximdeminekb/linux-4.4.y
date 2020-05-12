@@ -69,6 +69,8 @@ obj-$(CONFIG_MEDIATEK_WATCHDOG) += mtk_wdt.o
 obj-$(CONFIG_DIGICOLOR_WATCHDOG) += digicolor_wdt.o
 obj-$(CONFIG_LPC18XX_WATCHDOG) += lpc18xx_wdt.o
 obj-$(CONFIG_BCM7038_WDT) += bcm7038_wdt.o
+obj-$(CONFIG_NUC970_WDT) += nuc970_wdt.o
+obj-$(CONFIG_NUC970_WWDT) += nuc970_wwdt.o
 obj-$(CONFIG_NUC980_WDT) += nuc980_wdt.o
 obj-$(CONFIG_NUC980_WWDT) += nuc980_wwdt.o
 

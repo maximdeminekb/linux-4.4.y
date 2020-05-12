@@ -247,6 +247,14 @@ config PINCTRL_ZYNQ
 	help
 	  This selectes the pinctrl driver for Xilinx Zynq.
 
+config PINCTRL_NUC970
+	bool "NUC970/N9H30 pinctrl driver"
+	depends on ARCH_NUC970
+	select PINMUX
+	select PINCONF
+	help
+	  Say Y here to enable NUC970/N9H30 pinctrl driver
+
 config PINCTRL_NUC980
 	bool "NUC980 pinctrl driver"
 	depends on ARCH_NUC980

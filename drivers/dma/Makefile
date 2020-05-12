@@ -27,6 +27,7 @@ obj-$(CONFIG_DMA_SUN4I) += sun4i-dma.o
 obj-$(CONFIG_DMA_SUN6I) += sun6i-dma.o
 obj-$(CONFIG_DW_DMAC_CORE) += dw/
 obj-$(CONFIG_EP93XX_DMA) += ep93xx_dma.o
+obj-$(CONFIG_NUC970_DMA) += nuc970_dma.o
 obj-$(CONFIG_NUC980_DMA) += nuc980_dma.o
 obj-$(CONFIG_NUC980_DMA_UART1) += nuc980_dma_uart1.o
 obj-$(CONFIG_NUC980_DMA_UART2) += nuc980_dma_uart2.o

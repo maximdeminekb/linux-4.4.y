@@ -798,6 +798,35 @@ choice
 			bool "SDA:PD_15  SCL:PD_14"
 endchoice
 
+config I2C_BUS_NUC970_P0
+	tristate "NUC970/N9H30 I2C Driver for Port 0"
+	depends on ARCH_NUC970
+	help
+	  Say Y here to include support for I2C controller in the
+	  Nuvoton NUC970/N9H30 based System-on-Chip devices.
+
+config I2C_BUS_NUC970_P1
+	tristate "NUC970/N9H30 I2C Driver for Port 1"
+	depends on ARCH_NUC970
+	help
+	  Say Y here to include support for I2C controller in the
+	  Nuvoton NUC970 based System-on-Chip devices.
+choice
+	prompt "NUC970 I2C1 pin selection"
+	default NUC970_I2C1_PG
+	depends on I2C_BUS_NUC970_P1
+	help
+	  Select I2C1 multi-function pin. Can be PG2/PG3, PH2/PH3, PI3/PI4.
+
+	config NUC970_I2C1_PG
+		bool "Port G"
+	config NUC970_I2C1_PH
+		bool "Port H"
+	config NUC970_I2C1_PI
+		bool "Port I"
+endchoice
+
+
 config I2C_OCORES
 	tristate "OpenCores I2C Controller"
 	help

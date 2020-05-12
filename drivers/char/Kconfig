@@ -605,5 +605,23 @@ config TILE_SROM
 
 source "drivers/char/xillybus/Kconfig"
 
+config NUC970_MEM
+	bool "Support for /dev/nuc970-mem"
+	default y
+	---help---
+	  If you do say Y here, you can allocate physically linear memories from system memory.
+	  And you can share the memory at the other process using re-allocation ioctl.
+
+	  If unsure, say Y.
+
+config NUC970_DMA_PROXY
+        bool "Support for /dev/nuc970-dma"
+        default n
+        ---help---
+          If you do say Y here, you can control physically linear memories from system memory.
+          And you can share the memory at the other process using re-allocation ioctl.
+
+          If unsure, say Y.
+
 endmenu
 

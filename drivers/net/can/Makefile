@@ -17,6 +17,7 @@ obj-y				+= softing/
 obj-$(CONFIG_CAN_SJA1000)	+= sja1000/
 obj-$(CONFIG_CAN_MSCAN)		+= mscan/
 obj-$(CONFIG_CAN_C_CAN)		+= c_can/
+obj-$(CONFIG_NUC970_CAN)	+= nuc970_can/
 obj-$(CONFIG_NUC980_CAN)        += nuc980_can/
 obj-$(CONFIG_CAN_M_CAN)		+= m_can/
 obj-$(CONFIG_CAN_CC770)		+= cc770/

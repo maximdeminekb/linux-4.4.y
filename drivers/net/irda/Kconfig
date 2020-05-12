@@ -17,6 +17,13 @@ config IRTTY_SIR
 
 	  If unsure, say Y.
 
+config NUC970_SIR
+	tristate "NUC970/N9H30 SIR on UART"
+	depends on IRDA && TTY
+	help
+      Enable SIR function device on NUC970/N9H30 UART devcies.
+
+
 config NUC980_SIR
 	tristate "NUC980 SIR on UART"
 	depends on IRDA && TTY

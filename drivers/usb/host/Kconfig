@@ -151,6 +151,36 @@ config USB_EHCI_FSL
 	---help---
 	  Variation of ARC USB block used in some Freescale chips.
 
+config USB_NUC970_EHCI
+	bool "NUC970/N9H30 EHCI (USB 2.0) support"
+	depends on USB_EHCI_HCD && ARCH_NUC970
+	---help---
+		Enables support for NUC970/N9H30 USB EHCI controller
+
+choice
+    prompt "NUC970/N9H30 USB Host port power pin select"
+    default NUC970_USBH_PWR_PE
+	depends on !USE_OF
+    depends on USB_NUC970_EHCI
+
+    config NUC970_USBH_PWR_PE
+	bool "PE.14 and PE.15 for USBH_PPWR0/1, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_PWR_PF
+	bool "PF.10 for USBH_PPWR, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_OC_ONLY
+	bool "No USBH_PPWRx, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_PWR_NONE
+	bool "No USBH_PPWRx and USBH_OVRCUR"
+endchoice
+
+config USB_NUC970_PM_VBUS_OFF
+	bool "NUC970/N9H30 turn off USB Host VBUS power while power down"
+	depends on !USE_OF
+	depends on USB_NUC970_EHCI && (NUC970_USBH_PWR_PE || NUC970_USBH_PWR_PF)
+	---help---
+		While kernel in power down mode, turn off USB Host port VBUS power supply.
+		After kernel resumed, all connected USB devices will be re-enumerated.
+
 config USB_NUC980_EHCI
 	tristate "Support for NUC980 EHCI (USB 2.0)"
 	depends on ARCH_NUC980
@@ -418,6 +448,36 @@ config USB_OHCI_HCD
 	  module will be called ohci-hcd.
 
 if USB_OHCI_HCD
+
+config USB_NUC970_OHCI
+	bool "NUC970/N9H30 OHCI (USB 1.1) support"
+	depends on USB_OHCI_HCD && ARCH_NUC970
+	---help---
+		Enables support for NUC970/N9H30 USB OHCI controller
+
+choice
+    prompt "NUC970/N9H30 USB Host port power pin select"
+    default NUC970_USBH_PWR_PE_2
+	depends on !USE_OF
+    depends on (USB_NUC970_OHCI && !USB_NUC970_EHCI)
+
+    config NUC970_USBH_PWR_PE_2
+	bool "PE.14 and PE.15 for USBH_PPWR0/1, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_PWR_PF_2
+	bool "PF.10 for USBH_PPWR, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_OC_ONLY_2
+	bool "No USBH_PPWRx, PH.1 for USBH_OVRCUR"
+    config NUC970_USBH_PWR_NONE_2
+	bool "No USBH_PPWRx and USBH_OVRCUR"
+endchoice
+
+config USB_NUC970_PM_VBUS_OFF_2
+	bool "NUC970 turn off USB Host VBUS power while power down"
+	depends on USB_NUC970_OHCI && (NUC970_USBH_PWR_PE_2 || NUC970_USBH_PWR_PF_2)
+	depends on !USE_OF
+	---help---
+		While kernel in power down mode, turn off USB Host port VBUS power supply.
+		After kernel resumed, all connected USB devices will be re-enumerated.
 
 config USB_NUC980_OHCI
 	tristate "Support for NUC980 OHCI (USB 1.1)"
