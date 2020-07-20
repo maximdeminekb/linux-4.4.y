@@ -191,7 +191,7 @@ setup_machine_tags(phys_addr_t __atags_pointer, unsigned int machine_nr)
 	 * locate machine in the list of supported machines.
 	 */
 	for_each_machine_desc(p)
-#if defined(CONFIG_ARCH_NUC970) || defined(CONFIG_ARCH_NUC980)
+#if defined(CONFIG_ARCH_NUC970)
 		if(1) {	// We only enable one machine type in kernel, so the first one must be what we're looking for.  --ya
 #else
 		if (machine_nr == p->nr) {
