@@ -62,7 +62,7 @@ static struct map_desc nuc970_iodesc[] __initdata = {
         IODESC_ENT(SRAM),
 };
 
-extern void nuc970_restart(char mode, const char *cmd);
+extern void nuc970_restart(enum reboot_mode mode, const char *cmd);
 extern void nuc970_timer_init(void);
 static struct platform_device *nuc970_dev[] __initdata = {
 
