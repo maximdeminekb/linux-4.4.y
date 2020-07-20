@@ -34,6 +34,7 @@
 #include <mach/hardware.h>
 #include <mach/regs-aic.h>
 #include <mach/regs-gpio.h>
+#include <mach/gpio.h>
 #include <asm/gpio.h>
 
 static void nuc970_irq_mask(struct irq_data *d)
@@ -85,7 +86,9 @@ static const unsigned int Port[10]={
 				(unsigned int)REG_GPIOG_DIR,
 				(unsigned int)REG_GPIOH_DIR,
 				(unsigned int)REG_GPIOI_DIR,
-				(unsigned int)REG_GPIOJ_DIR};
+				(unsigned int)REG_GPIOJ_DIR
+};
+
 static unsigned short FType[10];
 static unsigned short RType[10];
 
@@ -426,7 +429,7 @@ static void nuc970_irq_demux_intgroup2(unsigned int irq,
 
 void __init nuc970_init_irq(void)
 {
-#if !defined(CONFIG_OF)
+#if !defined(CONFIG_USE_OF)
 
 	int irqno;
 
@@ -435,7 +438,7 @@ void __init nuc970_init_irq(void)
 
 	for (irqno = IRQ_WDT; irqno < NR_IRQS-SPARE_IRQS; irqno++) {
 		irq_set_chip_and_handler(irqno, &nuc970_irq_chip, handle_level_irq);
-		set_irq_flags(irqno, IRQF_VALID);
+		irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 	}
 
 #if defined(CONFIG_GPIO_NUC970) 
@@ -447,7 +450,7 @@ void __init nuc970_init_irq(void)
 
 		for (irqno = IRQ_GPIO_START; irqno < IRQ_GPIO_END; irqno++) {
 			irq_set_chip_and_handler(irqno, &nuc970_irq_gpio, handle_level_irq);
-			set_irq_flags(irqno, IRQF_VALID);
+			irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 		}
 
 	/*
@@ -461,13 +464,13 @@ void __init nuc970_init_irq(void)
 
 	for (irqno = IRQ_EXT0_H0; irqno <= IRQ_EXT7_I2; irqno++) {
 			irq_set_chip_and_handler(irqno, &nuc970_irq_ext, handle_level_irq);
-			set_irq_flags(irqno, IRQF_VALID);
+			irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 	}
 #endif
 #endif
 }
 
-#ifdef CONFIG_OF
+#ifdef CONFIG_USE_OF
 
 static struct irq_domain *nuc970_aic_domain;
 
@@ -479,7 +482,7 @@ static int nuc970_aic_irq_map(struct irq_domain *h, unsigned int virq,
 	if ((IRQ_WDT <= hw) && (hw < NR_IRQS-SPARE_IRQS))
 	{
 		irq_set_chip_and_handler(virq, &nuc970_irq_chip, handle_level_irq);
-		set_irq_flags(virq, IRQF_VALID | IRQF_PROBE);
+		irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 		
 #if defined(CONFIG_GPIO_NUC970) 
 
@@ -493,7 +496,7 @@ static int nuc970_aic_irq_map(struct irq_domain *h, unsigned int virq,
 		
 				for (irqno = IRQ_GPIO_START; irqno < IRQ_GPIO_END; irqno++) {
 					irq_set_chip_and_handler(irqno, &nuc970_irq_gpio, handle_level_irq);
-					set_irq_flags(irqno, IRQF_VALID);
+					irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 				}
 		
 			/*
@@ -507,7 +510,7 @@ static int nuc970_aic_irq_map(struct irq_domain *h, unsigned int virq,
 		
 			for (irqno = IRQ_EXT0_H0; irqno <= IRQ_EXT7_I2; irqno++) {
 					irq_set_chip_and_handler(irqno, &nuc970_irq_ext, handle_level_irq);
-					set_irq_flags(irqno, IRQF_VALID);
+					irq_clear_status_flags(irqno, IRQ_NOREQUEST);
 			}
 		}
 #endif
@@ -565,10 +568,10 @@ int __init nuc970_of_init_irq(struct device_node *node, struct device_node *pare
 
 #ifdef CONFIG_NUC970_CLK_ETIMER
 	irq_set_chip_and_handler(IRQ_ETIMER0, &nuc970_irq_chip, handle_level_irq);
-	set_irq_flags(IRQ_ETIMER0, IRQF_VALID);
+	irq_clear_status_flags(IRQ_ETIMER0, IRQ_NOREQUEST);
 #else
 	irq_set_chip_and_handler(IRQ_TMR0, &nuc970_irq_chip, handle_level_irq);
-	set_irq_flags(IRQ_TMR0, IRQF_VALID);
+	irq_clear_status_flags(IRQ_TMR0, IRQ_NOREQUEST);
 #endif
 	//irq_set_chip_and_handler(IRQ_UART0, &nuc970_irq_chip, handle_level_irq);
 	//set_irq_flags(IRQ_UART0, IRQF_VALID);
