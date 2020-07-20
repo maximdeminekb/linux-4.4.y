@@ -38,6 +38,7 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 #include <linux/clkdev.h>
+#include <linux/sched_clock.h>
 
 #include <asm/mach-types.h>
 #include <asm/mach/irq.h>
@@ -64,7 +65,7 @@
 
 static unsigned int timer0_load;
 
-static void nuc970_clockevent_setmode(enum clock_event_mode mode,
+/*static void nuc970_clockevent_setmode(enum clock_event_state state,
 		struct clock_event_device *clk)
 {
 	unsigned int val;
@@ -72,23 +73,57 @@ static void nuc970_clockevent_setmode(enum clock_event_mode mode,
 	val = __raw_readl(REG_TMR_TCSR0);
 	val &= ~(0x03 << 27);
 
-	switch (mode) {
-	case CLOCK_EVT_MODE_PERIODIC:
+	switch (state) {
+	case CLOCK_EVT_STATE_PERIODIC:
 		__raw_writel(timer0_load, REG_TMR_TICR0);
 		val |= (PERIOD | COUNTEN | INTEN | PRESCALE);
 		break;
 
-	case CLOCK_EVT_MODE_ONESHOT:
+	case CLOCK_EVT_STATE_ONESHOT:
 		val |= (ONESHOT | COUNTEN | INTEN | PRESCALE);
 		break;
 
-	case CLOCK_EVT_MODE_UNUSED:
-	case CLOCK_EVT_MODE_SHUTDOWN:
-	case CLOCK_EVT_MODE_RESUME:
+	case CLOCK_EVT_STATE_DETACHED:
+	case CLOCK_EVT_STATE_SHUTDOWN:
+	case CLOCK_EVT_STATE_ONESHOT_STOPPED:
 		break;
 	}
 
 	__raw_writel(val, REG_TMR_TCSR0);
+}*/
+
+static inline void timer_shutdown(struct clock_event_device *evt)
+{
+	/* disable timer */
+	__raw_writel(0x00, REG_TMR_TCSR0);
+}
+
+static int nuc970_shutdown(struct clock_event_device *evt)
+{
+	timer_shutdown(evt);
+
+	return 0;
+}
+
+int nuc970_set_periodic(struct clock_event_device *clk)
+{
+	unsigned int val;
+
+    val = __raw_readl(REG_TMR_TCSR0) & ~(0x03 << 27);
+	__raw_writel(timer0_load, REG_TMR_TICR0);	
+    val |= (PERIOD | COUNTEN | INTEN | PRESCALE);
+	__raw_writel(val, REG_TMR_TCSR0);
+	return 0;
+}
+
+int nuc970_set_oneshot(struct clock_event_device *clk)
+{
+	unsigned int val;
+
+	val = __raw_readl(REG_TMR_TCSR0) & ~(0x03 << 27);
+	val |= (ONESHOT | COUNTEN | INTEN | PRESCALE);
+	__raw_writel(val, REG_TMR_TCSR0);
+	return 0;
 }
 
 static int nuc970_clockevent_setnextevent(unsigned long evt,
@@ -139,7 +174,9 @@ static struct clock_event_device nuc970_clockevent_device = {
 	.name		= "nuc970-timer0",
 	.shift		= 32,
 	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
-	.set_mode	= nuc970_clockevent_setmode,
+	.set_state_shutdown = nuc970_shutdown,
+    .set_state_oneshot	= nuc970_set_oneshot,
+    .set_state_periodic = nuc970_set_periodic,
 	.set_next_event	= nuc970_clockevent_setnextevent,
 #ifdef CONFIG_PM
 	.suspend	= nuc970_clockevent_suspend,
@@ -162,7 +199,7 @@ static irqreturn_t nuc970_timer0_interrupt(int irq, void *dev_id)
 
 static struct irqaction nuc970_timer0_irq = {
 	.name		= "nuc970-timer0",
-	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+	.flags		= IRQF_TIMER | IRQF_IRQPOLL,
 	.handler	= nuc970_timer0_interrupt,
 };
 
@@ -268,7 +305,7 @@ static void __init nuc970_clocksource_init(void)
 
 	clocksource_nuc970.mult =
 		clocksource_khz2mult((rate / 1000), clocksource_nuc970.shift);
-	clocksource_register(&clocksource_nuc970);
+	clocksource_register_khz(&clocksource_nuc970, rate / 1000);
 }
 
 void __init nuc970_setup_default_serial_console(void)
