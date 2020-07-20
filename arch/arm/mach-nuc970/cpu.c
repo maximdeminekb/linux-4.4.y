@@ -45,7 +45,7 @@ u32 nuc970_uart_init[1] = {
 };
 #endif
 
-void nuc970_restart(char mode, const char *cmd)
+void nuc970_restart(enum reboot_mode mode, const char *cmd)
 {
 	unsigned long flags;
 
