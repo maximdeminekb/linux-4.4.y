@@ -5,34 +5,21 @@ config CPU_NUC970
 	select HAVE_CLK_PREPARE
 	select HAVE_MACH_CLKDEV
 	select COMMON_CLK
+	default y
 	help
 	  Support for NUC970 of Nuvoton microprocessor
-config CPU_N9H30
-	bool
-	select HAVE_CLK_PREPARE
-	select HAVE_MACH_CLKDEV
-	select COMMON_CLK
-	help
-		Support for N9H30 of Nuvoton microprocessor
-
+menu "NUC970 Machine"
 
 config MACH_NUC970
-	bool
+	bool "Nuvoton NUC970 Evaluation Board"
 	default y
+	select CPU_NUC970
+	help
+	 Say Y if you are using Nuvoton NUC970
+endmenu
 
 choice
-	prompt "Select NUC970/N9H30 processor"
-
-config CPU_NUC970
-	bool "NUC970 Series Microprocessor"
-
-config CPU_N9H30
-	bool "N9H30 Series Microprocessor"
-
-endchoice
-
-choice
-    prompt "Nuvoton NUC970/N9H30 Series Development Board"
+    prompt "Nuvoton NUC970 Series Development Board"
 
 config BOARD_NUC977
 	depends on !USE_OF
@@ -49,10 +36,6 @@ config BOARD_TOMATO
 config BOARD_ETH2UART
 	depends on !USE_OF
     bool "NUC972 Ethernet To UART Board"
-
-config BOARD_HMI
-	depends on !USE_OF
-   bool "N9H30 HMI Demo Board"
 
 config MACH_NUC972_EVB_DT
 	bool "Nuvoton NUC972 evaluation board using device tree"
@@ -71,10 +54,8 @@ config NUC970_FIQ
 	  Support FIQ in NUC970/N9H30. For more information, please refer to NUC970/N9H30
 	  BSP user's manual.
 
-endif
-
 choice
-    prompt "Nuvoton NUC970/N9H30 System Clock Selection"
+    prompt "Nuvoton NUC970 System Clock Selection"
 	help
 	  To support NO_HZ or HRTIMER, ETIMER must be used as system clock source.
           NOTE: If ETIMER is selected, ETIMER0/1will be used as system clock souce and
@@ -88,3 +69,5 @@ config NUC970_CLK_ETIMER
     bool "ETIMER as system clock source"
 
 endchoice
+
+endif
