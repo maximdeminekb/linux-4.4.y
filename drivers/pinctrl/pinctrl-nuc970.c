@@ -1934,7 +1934,7 @@ static int nuc970_get_groups(struct pinctrl_dev *pctldev, unsigned selector,
  * group is not used since some function use different setting between
  * different ports. for example UART....
  */
-int nuc970_enable(struct pinctrl_dev *pctldev, unsigned selector,
+int nuc970_set_mux(struct pinctrl_dev *pctldev, unsigned selector,
 		unsigned group)
 {
 	unsigned int i, j;
@@ -1967,36 +1967,11 @@ int nuc970_enable(struct pinctrl_dev *pctldev, unsigned selector,
 	return 0;
 }
 
-/*
- * By disable a function, we'll switch it back to GPIO
- */
-void nuc970_disable(struct pinctrl_dev *pctldev, unsigned selector,
-		unsigned group)
-{
-
-	unsigned int i, j;
-	unsigned int reg, offset;
-
-	//printk("disable =>%x %x\n", selector, group);
-	for(i = 0; i < nuc970_pinctrl_groups[group].num_pins; i++) {
-		j = nuc970_pinctrl_groups[group].pins[i];
-		offset = (j >> 4) * 8 + ((j & 0x8) ? 4 : 0);
-
-		reg = __raw_readl(REG_MFP_GPA_L + offset);
-		reg &= ~(0xF << ((j & 0x7) * 4));
-		__raw_writel(reg, REG_MFP_GPA_L + offset);
-	}
-
-	return;
-}
-
-
 struct pinmux_ops nuc970_pmxops = {
 	.get_functions_count = nuc970_get_functions_count,
 	.get_function_name = nuc970_get_fname,
 	.get_function_groups = nuc970_get_groups,
-	.enable = nuc970_enable,
-	.disable = nuc970_disable,
+	.set_mux = nuc980_set_mux,
 };
 
 static struct pinctrl_desc nuc970_pinctrl_desc = {
