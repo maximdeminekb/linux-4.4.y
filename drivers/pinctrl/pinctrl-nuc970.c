@@ -1971,7 +1971,7 @@ struct pinmux_ops nuc970_pmxops = {
 	.get_functions_count = nuc970_get_functions_count,
 	.get_function_name = nuc970_get_fname,
 	.get_function_groups = nuc970_get_groups,
-	.set_mux = nuc980_set_mux,
+	.set_mux = nuc970_set_mux,
 };
 
 static struct pinctrl_desc nuc970_pinctrl_desc = {
